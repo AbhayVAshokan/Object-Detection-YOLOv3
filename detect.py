@@ -17,6 +17,9 @@ from dependencies.argument_parser import parseArguments
 ap = argparse.ArgumentParser()
 args = parseArguments(ap)
 
+# Initialize YOLO parameters for detection
+params = initialize(args)
+
 # create required directories
 dir = args.input.split("/")[1].split(".")[0]
 directories = ['./snapshots/' + dir, './output/', './time/', './frames/']
@@ -24,9 +27,6 @@ directories = ['./snapshots/' + dir, './output/', './time/', './frames/']
 for directory in directories:
     if not os.path.exists(directory):
         os.makedirs(directory)
-
-# Initialize YOLO parameters for detection
-params = initialize(args)
 
 # start the FPS timer
 timer = FPS().start()
