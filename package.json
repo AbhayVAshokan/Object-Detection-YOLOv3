@@ -4,7 +4,8 @@
   "description": "Server to run python code to perform object detection and motion detection",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon app"
+    "test": "nodemon app",
+    "start": "npm app"
   },
   "keywords": [
     "Motion",

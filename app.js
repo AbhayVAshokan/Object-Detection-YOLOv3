@@ -28,8 +28,16 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+    res.sendFile('index.html', { root: 'detection-website' })
+})
+
+app.get('/test', (req, res) => {
+    res.send('Hello World')
+})
+
 var python_process;
-app.get('/start', function (req, res) {
+app.post('/start', function (req, res) {
 
     var pyshell = new PythonShell('detect.py');
 
@@ -43,7 +51,7 @@ app.get('/start', function (req, res) {
     res.send('Started.');
 });
 
-app.get('/stop', function (req, res) {
+app.post('/stop', function (req, res) {
     python_process.kill('SIGINT');
     res.send('Stopped');
 });
