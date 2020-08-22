@@ -47,17 +47,17 @@ app.post('/start', function (req, res) {
 
     let options = {
         mode: "text",
-        args: ["--input", input, "--output", output, '--yolo', yolo, '--confidence', confidence, 'threshold', threshold]
+        args: ["-i" +  input, "-o" + output, '-y' + yolo, '-c' + confidence, '-t' + threshold]
     };
     var pyshell = new PythonShell('detect.py', options);
 
     pyshell.end(function (err) {
         if (err)
             console.log(err);
+
+        res.sendFile('index.html', { root: 'detection-website' });
     });
     python_process = pyshell.childProcess;
-
-    res.sendFile('index.html', { root: 'detection-website' });
 });
 
 app.post('/stop', function (req, res) {
