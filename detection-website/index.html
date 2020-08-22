@@ -71,22 +71,10 @@
     startbtn.onclick = startPythonScript
     stopbtn.onclick = stopPythonScript
 
-    // form.addEventListener('submit', function(e) {
-    //   e.preventDefault();
-
-    //   const formdata = new FormData(this);
-
-    //   fetch('http://localhost:3000/start', {
-    //     method: 'post',
-    //     body: formdata
-    //   }).then(console.log('Complete'));
-
-    // });
-
     async function startPythonScript(event) {
       event.preventDefault();
       try {
-        const response = await fetch('http:localhost:3000/test', {
+        const response = await fetch('/start', {
           method: 'POST',
           body: new FormData(document.getElementById("yolo-form"))
         })
@@ -96,17 +84,15 @@
       }
     }
 
-    async function stopPythonScript() {
+    async function stopPythonScript(event) {
+      event.preventDefault();
       try {
-        const response = await fetch('/hello', {
-          method: 'post',
-          body: {
-            // Your body
-          }
-        });
-        console.log('Completed!', response);
-      } catch (err) {
-        console.error(`Error: ${err}`);
+        const response = await fetch('/stop', {
+          method: 'POST',
+        })
+        .then(console.log('Completed!', response));
+      } catch  {
+        console.log('error');
       }
     }
   </script>
