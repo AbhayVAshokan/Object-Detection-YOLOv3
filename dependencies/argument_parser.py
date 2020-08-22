@@ -4,7 +4,7 @@ class Arguments:
 
         # Initializing default values
         if input == None:
-            input = 'videos/test.mp4'
+            input = 'videos/cctv_footage.mp4'
         if output == None:
             output = 'output/test.avi'
         if yolo == None:
