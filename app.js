@@ -38,13 +38,22 @@ app.get('/test', (req, res) => {
 
 var python_process;
 app.post('/start', function (req, res) {
+    const input = req.body.input || 'videos/cctv_footage.mp4';
+    const output = req.body.output || 'output/Test.avi';
+    const yolo = req.body.yolo || 'yolo-coco';
+    const confidence = req.body.confidence || 0.0;
+    const threshold = req.body.threshold || 0.0;
 
-    var pyshell = new PythonShell('detect.py');
+
+    let options = {
+        mode: "text",
+        args: ["--input", input, "--output", output, '--yolo', yolo, '--confidence', confidence, 'threshold', threshold]
+    };
+    var pyshell = new PythonShell('detect.py', options);
 
     pyshell.end(function (err) {
-        if (err) {
+        if (err)
             console.log(err);
-        }
     });
     python_process = pyshell.childProcess;
 

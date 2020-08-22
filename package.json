@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "nodemon app",
-    "start": "npm app"
+    "start": "node app"
   },
   "keywords": [
     "Motion",
