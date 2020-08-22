@@ -15,7 +15,7 @@
     <div class="row">
       <div class="col-md-8">
 
-        <form id="yolo-form">
+        <form id="yolo-form" method="post">
           <legend class="border-bottom mb-4">Object Detection</legend>
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -66,22 +66,33 @@
   <script>
     const startbtn = document.getElementById('start')
     const stopbtn = document.getElementById('stop')
-    const form = document.getElementById('yolo-form')
+    const form = document.getElementById('yolo-form');
 
     startbtn.onclick = startPythonScript
     stopbtn.onclick = stopPythonScript
 
-    async function startPythonScript() {
+    // form.addEventListener('submit', function(e) {
+    //   e.preventDefault();
+
+    //   const formdata = new FormData(this);
+
+    //   fetch('http://localhost:3000/start', {
+    //     method: 'post',
+    //     body: formdata
+    //   }).then(console.log('Complete'));
+
+    // });
+
+    async function startPythonScript(event) {
+      event.preventDefault();
       try {
-        const response = await fetch('localhost:3000/test', {
-          method: 'post',
-          body: {
-            // Your body
-          }
-        });
-        console.log('Completed!', response);
-      } catch (err) {
-        console.error(`Error: ${err}`);
+        const response = await fetch('http:localhost:3000/test', {
+          method: 'POST',
+          body: new FormData(document.getElementById("yolo-form"))
+        })
+        .then(console.log('Completed!', response));
+      } catch  {
+        console.log('error');
       }
     }
 
