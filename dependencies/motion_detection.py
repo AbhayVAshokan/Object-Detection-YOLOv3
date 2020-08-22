@@ -9,6 +9,8 @@ class MotionDetection:
         self.delta_frame = None
         self.thresh_frame = None
 
+
+# Function to perform motion detection
 def motionDetector(frame, first_frame):
     """
     Performs object detection by comparison between the current frame and the previous frame.

@@ -10,7 +10,7 @@ import numpy as np
 from imutils.video import FPS
 from datetime import datetime
 
-from dependencies.object_detection import initialize
+from dependencies.yolo import initialize
 from dependencies.argument_parser import parseArguments
 from dependencies.motion_detection import motionDetector
 
@@ -213,6 +213,8 @@ for i in range(0, len(time_stamp)-1, 2):
         {"Start": time_stamp[i], "End": time_stamp[i + 1]}, ignore_index=True)
     frames_of_movements = frames_of_movements.append(
         {"Start": frames[i], "End": frames[i + 1]}, ignore_index=True)
+
+
 
 # create a CSV file in which time and frame numbers of movements
 # will be saved

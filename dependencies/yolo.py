@@ -1,8 +1,8 @@
 import os
 import numpy as np
 
-# Class to store parameters for object detection
-class ObjectDetection:
+# Class to store parameters for YOLO algorithm
+class Yolo:
     def __init__(self, labels, colors, targets, weights_path, config_path):
         self.labels = labels
         self.colors = colors
@@ -10,10 +10,10 @@ class ObjectDetection:
         self.weights_path = weights_path
         self.config_path = config_path
 
-# Function to initialize object detection parameters
+# Function to initialize YOLO algorithm parameters
 def initialize(args):
     """
-    Returns a object of type ObjectDetection with the parameters initialized
+    Returns a object of type Yolo with the parameters initialized
     """
 
     # load the COCO class labels our YOLO model was trained on
@@ -31,4 +31,4 @@ def initialize(args):
     # list the target classes
     TARGETS = [0, 1, 2, 3, 5, 7]
 
-    return ObjectDetection(labels=LABELS, colors=COLORS, targets=TARGETS, weights_path=weights_path, config_path=config_path)
+    return Yolo(labels=LABELS, colors=COLORS, targets=TARGETS, weights_path=weights_path, config_path=config_path)
