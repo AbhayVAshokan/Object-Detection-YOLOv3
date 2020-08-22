@@ -4,5 +4,5 @@ frames
 output
 snapshots
 time
-yolo-coco
 dependencies/__pycache__
+yolo-coco/yolov3.weights

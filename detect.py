@@ -9,7 +9,7 @@ import numpy as np
 from imutils.video import FPS
 from datetime import datetime
 
-from dependencies.argument_parser import *
+from dependencies.argument_parser import parseArguments
 
 # Parse command line arguments
 ap = argparse.ArgumentParser()
@@ -19,7 +19,7 @@ args = parseArguments(ap)
 # create required directories
 dir = args.input.split("/")[1].split(".")[0]
 if not os.path.exists('./snapshots/'+dir):
-    os.makedirs('./snapshots/'+dir)
+    os.makedirs('./snapshots/' + dir)
 if not os.path.exists('./output/'):
     os.makedirs('./output')
 if not os.path.exists('./time/'):
