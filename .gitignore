@@ -1,0 +1,8 @@
+.vscode
+server
+frames
+output
+snapshots
+time
+dependencies/__pycache__
+yolo-coco/yolov3.weights
