@@ -12,6 +12,7 @@ from datetime import datetime
 
 from dependencies.object_detection import initialize
 from dependencies.argument_parser import parseArguments
+from dependencies.motion_detection import motionDetector
 
 # Parse command line arguments
 ap = argparse.ArgumentParser()
@@ -38,11 +39,9 @@ net = cv2.dnn.readNetFromDarknet(params.config_path, params.weights_path)
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
-# assign our first frame to None
-first_frame = None
-
 # list to track movement
 status_list = [None, None]
+first_frame = [None]
 
 # list to store time stamp and frame number of movement
 time_stamp = []
@@ -89,42 +88,14 @@ while True:
     if W is None or H is None:
         (H, W) = frame.shape[:2]
 
-    # initialize status = 0 (no movements)
-    status = 0
 
-    # convert the color frame to gray frame as an extra layer of color
-    # is not required
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    # convert gray scale image to GaussianBlur
-    gray = cv2.GaussianBlur(gray, (21, 21), 0)
-
-    # set first frame as the baseline frame
-    if first_frame is None:
-        first_frame = gray
+    # Performing Motion Detection
+    ret, status = motionDetector(frame, first_frame)
+    if not ret:
         continue
-
-    # calculate difference between static background and current frame
-    delta_frame = cv2.absdiff(first_frame, gray)
-
-    # apply the threshold
-    thresh_frame = cv2.threshold(delta_frame, 30, 255, cv2.THRESH_BINARY)[1]
-
-    # dilate the Threshold Frame and find pixel contours in it
-    thresh_frame = cv2.dilate(thresh_frame, None, iterations=3)
-
-    # find contours in the frame
-    contours, _ = cv2.findContours(
-        thresh_frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    for contour in contours:
-        if cv2.contourArea(contour) < 10000:
-            continue
-        status = 1
 
     # append status of movements
     status_list.append(status)
-
     status_list = status_list[-2:]
 
     # append time and frame number for the start of movements
@@ -133,7 +104,7 @@ while True:
         frames.append(frame_count)
         flag = True
 
-        # perform detection if there is movement
+    # perform detection if there is movement
     if flag and not ((frame_count - frames[-1]) % factor):
                 # Construct a blob from the input frame and then perform
                 # a forward pass of the YOLO object detector to get the
