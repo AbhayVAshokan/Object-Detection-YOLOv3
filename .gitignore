@@ -1,8 +1,8 @@
 .vscode
 server
-yolo-coco/yolov3.weights
-server/node_modules
-output
 frames
+output
 snapshots
 time
+yolo-coco
+dependencies/__pycache__

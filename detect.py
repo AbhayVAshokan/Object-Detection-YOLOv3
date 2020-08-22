@@ -1,32 +1,23 @@
 # Usage: python3 detect.py --input videos/test.mp4 --output output/test.avi --yolo yolo-coco
 
 # import required libraries
+import os
 import cv2
 import time
 import pandas
 import numpy as np
-import argparse
-import imutils
-import os
 from imutils.video import FPS
 from datetime import datetime
 
-# construct the argument parse and parse the arguments
+from dependencies.argument_parser import *
+
+# Parse command line arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--input", required=True,
-                help="path to input video")
-ap.add_argument("-o", "--output", required=True,
-                help="path to output video")
-ap.add_argument("-y", "--yolo", required=True,
-                help="base path to YOLO directory")
-ap.add_argument("-c", "--confidence", type=float, default=0.5,
-                help="minimum probability to filter weak detections")
-ap.add_argument("-t", "--threshold", type=float, default=0.3,
-                help="threshold when applyong non-maxima suppression")
-args = vars(ap.parse_args())
+args = parseArguments(ap)
+
 
 # create required directories
-dir = args["input"].split("/")[1].split(".")[0]
+dir = args.input.split("/")[1].split(".")[0]
 if not os.path.exists('./snapshots/'+dir):
     os.makedirs('./snapshots/'+dir)
 if not os.path.exists('./output/'):
@@ -37,7 +28,7 @@ if not os.path.exists('./frames/'):
     os.makedirs('./frames')
 
 # load the COCO class labels our YOLO model was trained on
-labels_path = os.path.sep.join([args["yolo"], "coco.names"])
+labels_path = os.path.sep.join([args.yolo, "coco.names"])
 LABELS = open(labels_path).read().strip().split("\n")
 
 # initialize a list of colors to represent each possible class label
@@ -45,8 +36,8 @@ np.random.seed(42)
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
 # derive the paths to the YOLO weights and model configuration
-weights_path = os.path.sep.join([args["yolo"], "yolov3.weights"])
-config_path = os.path.sep.join([args["yolo"], "yolov3.cfg"])
+weights_path = os.path.sep.join([args.yolo, "yolov3.weights"])
+config_path = os.path.sep.join([args.yolo, "yolov3.cfg"])
 
 # start the FPS timer
 timer = FPS().start()
@@ -83,7 +74,7 @@ factor = 2
 
 # initialize the video stream, pointer to output video file and
 # frame dimensions
-video = cv2.VideoCapture(args["input"])
+video = cv2.VideoCapture(args.input)
 writer = None
 (W, H) = (None, None)
 
@@ -186,7 +177,7 @@ while True:
 
                 # filter out weak predictions by ensuring the detected
                 # probability is greater than the minimum probability
-                if confidence > args["confidence"]:
+                if confidence > args.confidence:
                                         # scale the bounding box coordinates back relative to
                                         # the size of the image
                     box = detection[0:4] * np.array([W, H, W, H])
@@ -206,7 +197,7 @@ while True:
                 # apply non-maxima suppression to suppress weak, overlapping
                 # bounding boxes
         idxs = cv2.dnn.NMSBoxes(
-            boxes, confidences, args["confidence"], args["threshold"])
+            boxes, confidences, args.confidence, args.threshold)
 
         # ensure at least one detection exists
         if len(idxs) > 0:
@@ -234,7 +225,7 @@ while True:
                     # initialize our video writer
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             writer = cv2.VideoWriter(
-                args["output"], fourcc, fps//2, (frame.shape[1], frame.shape[0]), True)
+                args.output, fourcc, fps//2, (frame.shape[1], frame.shape[0]), True)
 
             # write the output frame to disk
         print("Writing to output -> {}".format(frame_count))
