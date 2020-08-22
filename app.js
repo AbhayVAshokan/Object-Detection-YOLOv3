@@ -48,12 +48,12 @@ app.post('/start', function (req, res) {
     });
     python_process = pyshell.childProcess;
 
-    res.send('Started.');
+    res.sendFile('index.html', { root: 'detection-website' });
 });
 
 app.post('/stop', function (req, res) {
     python_process.kill('SIGINT');
-    res.send('Stopped');
+    res.sendFile('index.html', { root: 'detection-website' });
 });
 
 // Throw 404 error if the request does not match an existing route
