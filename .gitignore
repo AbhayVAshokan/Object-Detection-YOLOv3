@@ -1,0 +1,8 @@
+.vscode
+server
+yolo-coco/yolov3.weights
+server/node_modules
+output
+frames
+snapshots
+time
