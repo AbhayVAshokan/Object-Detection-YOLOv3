@@ -1,6 +1,3 @@
-
-import argparse
-
 # Class to store command line arguments
 class Arguments:
     def __init__(self, input, output, yolo, confidence, threshold):
@@ -25,6 +22,10 @@ class Arguments:
 
 # Function to parse command line arguments
 def parseArguments(ap):
+    """
+    Parses command line arguments and returns an object of type Arguments.
+    """
+    
     ap.add_argument("-i", "--input",
                     help="path to input video")
     ap.add_argument("-o", "--output",

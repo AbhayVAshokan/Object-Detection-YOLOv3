@@ -5,39 +5,28 @@ import os
 import cv2
 import time
 import pandas
+import argparse
 import numpy as np
 from imutils.video import FPS
 from datetime import datetime
 
+from dependencies.object_detection import initialize
 from dependencies.argument_parser import parseArguments
 
 # Parse command line arguments
 ap = argparse.ArgumentParser()
 args = parseArguments(ap)
 
-
 # create required directories
 dir = args.input.split("/")[1].split(".")[0]
-if not os.path.exists('./snapshots/'+dir):
-    os.makedirs('./snapshots/' + dir)
-if not os.path.exists('./output/'):
-    os.makedirs('./output')
-if not os.path.exists('./time/'):
-    os.makedirs('./time')
-if not os.path.exists('./frames/'):
-    os.makedirs('./frames')
+directories = ['./snapshots/' + dir, './output/', './time/', './frames/']
 
-# load the COCO class labels our YOLO model was trained on
-labels_path = os.path.sep.join([args.yolo, "coco.names"])
-LABELS = open(labels_path).read().strip().split("\n")
+for directory in directories:
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
-# initialize a list of colors to represent each possible class label
-np.random.seed(42)
-COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
-
-# derive the paths to the YOLO weights and model configuration
-weights_path = os.path.sep.join([args.yolo, "yolov3.weights"])
-config_path = os.path.sep.join([args.yolo, "yolov3.cfg"])
+# Initialize YOLO parameters for detection
+params = initialize(args)
 
 # start the FPS timer
 timer = FPS().start()
@@ -45,12 +34,9 @@ timer = FPS().start()
 # load our YOLO object detector trained on COCO dataset (80 classes)
 # and determine only the output layer names that we need from YOLO
 print("[INFO] loading YOLO from disk...")
-net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
+net = cv2.dnn.readNetFromDarknet(params.config_path, params.weights_path)
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-
-# list the target classes
-TARGETS = [0, 1, 2, 3, 5, 7]
 
 # assign our first frame to None
 first_frame = None
@@ -171,7 +157,7 @@ while True:
                                 # of the current object detection
                 scores = detection[5:]
                 classID = np.argmax(scores)
-                if classID not in TARGETS:
+                if classID not in params.targets:
                     continue
                 confidence = scores[classID]
 
@@ -208,9 +194,9 @@ while True:
                 (w, h) = (boxes[i][2], boxes[i][3])
 
                 # draw a bounding box rectangle and label on the frame
-                color = [int(c) for c in COLORS[classIDs[i]]]
+                color = [int(c) for c in params.colors[classIDs[i]]]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-                text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
+                text = "{}: {:.4f}".format(params.labels[classIDs[i]], confidences[i])
                 cv2.putText(frame, text, (x, y - 5),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
